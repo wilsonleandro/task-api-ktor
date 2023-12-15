@@ -3,6 +3,7 @@ package br.com.task
 import br.com.task.di.databaseModule
 import br.com.task.di.repositoryModule
 import br.com.task.di.serviceModule
+import br.com.task.di.usecaseModule
 import br.com.task.plugins.configureHTTP
 import br.com.task.plugins.configureMonitoring
 import br.com.task.plugins.configureRouting
@@ -20,6 +21,7 @@ fun Application.module() {
             databaseModule,
             repositoryModule,
             serviceModule,
+            usecaseModule,
         )
     }
     configureMonitoring()
