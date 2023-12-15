@@ -1,20 +1,14 @@
 package br.com.task.plugins
 
-import io.ktor.http.*
+import br.com.task.core.domain.data.service.TaskService
+import br.com.task.routes.taskRoute
 import io.ktor.server.application.*
-import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.koin.ktor.ext.inject
 
 fun Application.configureRouting() {
-    install(StatusPages) {
-        exception<Throwable> { call, cause ->
-            call.respondText(text = "500: $cause" , status = HttpStatusCode.InternalServerError)
-        }
-    }
-    routing {
-        get("/") {
-            call.respondText("Hello World!")
-        }
+    val taskService by inject<TaskService>()
+    install(Routing) {
+        taskRoute(taskService)
     }
 }
