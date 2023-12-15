@@ -1,1 +1,1 @@
-rootProject.name = "br.com.task"
+rootProject.name = "task"
