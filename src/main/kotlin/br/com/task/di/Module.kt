@@ -4,6 +4,8 @@ import br.com.task.core.domain.data.repository.TaskRepository
 import br.com.task.core.domain.data.service.TaskService
 import br.com.task.core.domain.usecase.ValidateCreateTaskRequest
 import br.com.task.core.domain.usecase.ValidateCreateTaskRequestImpl
+import br.com.task.core.domain.usecase.ValidateUpdateTaskRequest
+import br.com.task.core.domain.usecase.ValidateUpdateTaskRequestImpl
 import br.com.task.data.repository.TaskRepositoryImpl
 import br.com.task.data.service.TaskServiceImpl
 import br.com.task.utils.Constants.LOCAL_DATABASE_NAME
@@ -27,12 +29,15 @@ val repositoryModule = module {
 
 val serviceModule = module {
     single<TaskService> {
-        TaskServiceImpl(get(), get())
+        TaskServiceImpl(get(), get(), get())
     }
 }
 
 val usecaseModule = module {
     single<ValidateCreateTaskRequest> {
         ValidateCreateTaskRequestImpl()
+    }
+    single<ValidateUpdateTaskRequest> {
+        ValidateUpdateTaskRequestImpl()
     }
 }
