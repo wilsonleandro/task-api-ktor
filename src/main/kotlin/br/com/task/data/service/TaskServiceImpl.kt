@@ -9,6 +9,7 @@ import br.com.task.data.request.CreateTaskRequest
 import br.com.task.data.request.UpdateTaskRequest
 import br.com.task.data.request.toTask
 import br.com.task.data.response.SimpleResponse
+import br.com.task.plugins.TaskNotFoundException
 
 class TaskServiceImpl(
     private val repository: TaskRepository,
@@ -47,6 +48,17 @@ class TaskServiceImpl(
             true -> SimpleResponse(success = true, message = "Task updated successfully", statusCode = 200)
             false -> SimpleResponse(success = false, message = "Cannot save task", statusCode = 400)
         }
+    }
+
+    override suspend fun delete(id: String): SimpleResponse {
+        val task = getTaskById(id)
+        task?.let {
+            return if (repository.delete(it.id)) {
+                SimpleResponse(success = true, message = "Task deleted successfully", statusCode = 204)
+            } else {
+                SimpleResponse(success = false, message = "Cannot delete task", statusCode = 400)
+            }
+        } ?: throw TaskNotFoundException("Task $id not found")
     }
 
 }

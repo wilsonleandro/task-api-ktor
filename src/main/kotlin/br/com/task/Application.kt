@@ -4,10 +4,7 @@ import br.com.task.di.databaseModule
 import br.com.task.di.repositoryModule
 import br.com.task.di.serviceModule
 import br.com.task.di.usecaseModule
-import br.com.task.plugins.configureHTTP
-import br.com.task.plugins.configureMonitoring
-import br.com.task.plugins.configureRouting
-import br.com.task.plugins.configureSerialization
+import br.com.task.plugins.*
 import io.ktor.server.application.*
 import org.koin.ktor.plugin.Koin
 
@@ -28,4 +25,5 @@ fun Application.module() {
     configureSerialization()
     configureHTTP()
     configureRouting()
+    configureStatusPage()
 }
