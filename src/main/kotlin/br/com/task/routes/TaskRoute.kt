@@ -19,6 +19,7 @@ fun Route.taskRoute(taskService: TaskService) {
         insertTask(taskService)
         updateTask(taskService)
         deleteTask(taskService)
+        completeTask(taskService)
     }
 }
 
@@ -100,6 +101,26 @@ private fun Route.deleteTask(taskService: TaskService) {
             call.respond(HttpStatusCode.OK, simpleResponse)
         } else {
             call.respond(HttpStatusCode.BadRequest, simpleResponse)
+        }
+    }
+}
+
+private fun Route.completeTask(taskService: TaskService) {
+    patch("/{id}") {
+        val taskId = call.parameters[PARAM_ID] ?: ""
+        val simpleResponse = taskService.complete(taskId)
+        when {
+            simpleResponse.success -> {
+                call.respond(HttpStatusCode.OK, simpleResponse)
+            }
+
+            simpleResponse.statusCode == 404 -> {
+                call.respond(HttpStatusCode.NotFound, simpleResponse)
+            }
+
+            else -> {
+                call.respond(HttpStatusCode.BadRequest, simpleResponse)
+            }
         }
     }
 }

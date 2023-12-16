@@ -11,4 +11,5 @@ interface TaskService {
     suspend fun getTaskById(id: String): Task?
     suspend fun update(id: String, updateTaskRequest: UpdateTaskRequest): SimpleResponse
     suspend fun delete(id: String): SimpleResponse
+    suspend fun complete(id: String): SimpleResponse
 }

@@ -61,4 +61,15 @@ class TaskServiceImpl(
         } ?: throw TaskNotFoundException("Task $id not found")
     }
 
+    override suspend fun complete(id: String): SimpleResponse {
+        val task = getTaskById(id)
+        task?.let {
+            val modifiedCount = repository.completedTask(it.id)
+            if (modifiedCount > 0)
+                return SimpleResponse(success = true, message = "Task completed", statusCode = 200)
+            else
+                return SimpleResponse(success = true, message = "Cannot complete task", statusCode = 400)
+        } ?: return SimpleResponse(success = false, message = "Task not found", statusCode = 404)
+    }
+
 }
