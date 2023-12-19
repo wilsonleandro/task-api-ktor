@@ -6,6 +6,7 @@ val logback_version: String by project
 val koin_version: String by project
 val kMongo_version: String by project
 val mongodb_driver_version: String by project
+val bcrypt_version: String by project
 
 plugins {
     kotlin("jvm") version "1.9.21"
@@ -35,6 +36,7 @@ dependencies {
     implementation("io.ktor:ktor-server-host-common-jvm")
     implementation("io.ktor:ktor-server-status-pages-jvm")
     implementation("io.ktor:ktor-server-netty-jvm")
+    implementation("io.ktor:ktor-server-auth-jvm")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
@@ -48,4 +50,6 @@ dependencies {
     implementation("org.litote.kmongo:kmongo-async:$kMongo_version")
     implementation("org.litote.kmongo:kmongo-coroutine:$kMongo_version")
     implementation("org.mongodb:mongodb-driver-sync:$mongodb_driver_version")
+    // Bcrypt
+    implementation("at.favre.lib:bcrypt:$bcrypt_version")
 }
