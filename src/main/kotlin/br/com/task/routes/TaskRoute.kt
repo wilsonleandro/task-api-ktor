@@ -6,6 +6,7 @@ import br.com.task.data.request.UpdateTaskRequest
 import br.com.task.data.response.SimpleResponse
 import br.com.task.utils.Constants.PARAM_ID
 import br.com.task.utils.Constants.TASKS_ROUTE
+import br.com.task.utils.ErrorCodes
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -36,7 +37,7 @@ private fun Route.getTasks(taskService: TaskService) {
 }
 
 private fun Route.getTaskById(taskService: TaskService) {
-    get("/{id}") {
+    get("/{$PARAM_ID}") {
         val taskId = call.parameters[PARAM_ID] ?: ""
         val task = taskService.getTaskById(taskId)
         task?.let {
@@ -45,8 +46,7 @@ private fun Route.getTaskById(taskService: TaskService) {
             HttpStatusCode.NotFound,
             SimpleResponse(
                 success = false,
-                message = "Task not found",
-                statusCode = 404
+                message = ErrorCodes.TASK_NOT_FOUND.message,
             )
         )
     }
@@ -62,7 +62,7 @@ private fun Route.insertTask(taskService: TaskService) {
                     call.respond(HttpStatusCode.Created, simpleResponse)
                 }
 
-                simpleResponse.statusCode == 400 -> {
+                else -> {
                     call.respond(HttpStatusCode.BadRequest, simpleResponse)
                 }
             }
@@ -71,7 +71,7 @@ private fun Route.insertTask(taskService: TaskService) {
 }
 
 private fun Route.updateTask(taskService: TaskService) {
-    put("/{id}") {
+    put("/{$PARAM_ID}") {
         val taskId = call.parameters[PARAM_ID] ?: ""
         val request = call.receiveNullable<UpdateTaskRequest>()
         request?.let { updateTaskRequest ->
@@ -79,10 +79,6 @@ private fun Route.updateTask(taskService: TaskService) {
             when {
                 simpleResponse.success -> {
                     call.respond(HttpStatusCode.OK, simpleResponse)
-                }
-
-                simpleResponse.statusCode == 404 -> {
-                    call.respond(HttpStatusCode.NotFound, simpleResponse)
                 }
 
                 else -> {
@@ -94,7 +90,7 @@ private fun Route.updateTask(taskService: TaskService) {
 }
 
 private fun Route.deleteTask(taskService: TaskService) {
-    delete("/{id}") {
+    delete("/{$PARAM_ID}") {
         val taskId = call.parameters[PARAM_ID] ?: ""
         val simpleResponse = taskService.delete(taskId)
         if (simpleResponse.success) {
@@ -106,16 +102,12 @@ private fun Route.deleteTask(taskService: TaskService) {
 }
 
 private fun Route.completeTask(taskService: TaskService) {
-    patch("/{id}") {
+    patch("/{$PARAM_ID}") {
         val taskId = call.parameters[PARAM_ID] ?: ""
         val simpleResponse = taskService.complete(taskId)
         when {
             simpleResponse.success -> {
                 call.respond(HttpStatusCode.OK, simpleResponse)
-            }
-
-            simpleResponse.statusCode == 404 -> {
-                call.respond(HttpStatusCode.NotFound, simpleResponse)
             }
 
             else -> {
