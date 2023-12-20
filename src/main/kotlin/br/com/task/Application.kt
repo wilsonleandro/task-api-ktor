@@ -24,6 +24,7 @@ fun Application.module() {
     configureMonitoring()
     configureSerialization()
     configureHTTP()
+    configureSecurity()
     configureRouting()
     configureStatusPage()
 }
