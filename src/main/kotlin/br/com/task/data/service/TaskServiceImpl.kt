@@ -1,5 +1,6 @@
 package br.com.task.data.service
 
+import br.com.task.core.domain.data.repository.CustomerRepository
 import br.com.task.core.domain.data.repository.TaskRepository
 import br.com.task.core.domain.data.service.TaskService
 import br.com.task.core.domain.model.Task
@@ -15,21 +16,30 @@ import br.com.task.utils.SuccessCodes
 
 class TaskServiceImpl(
     private val repository: TaskRepository,
+    private val customerRepository: CustomerRepository,
     private val validateCreateTaskRequest: ValidateCreateTaskRequest,
     private val validateUpdateTaskRequest: ValidateUpdateTaskRequest,
 ) : TaskService {
-    override suspend fun getTasks(): List<Task> =
-        repository.getTasks()
+    override suspend fun getTasks(email: String?): List<Task> {
+        email?.let {
+            val customer = customerRepository.getCustomerByEmail(it)
+            return repository.getTasks(customer?.id)
+        } ?: return emptyList()
+    }
 
     override suspend fun getTaskById(id: String): Task? =
         repository.getTaskById(id)
 
-    override suspend fun insert(createTaskRequest: CreateTaskRequest): SimpleResponse {
+    override suspend fun insert(createTaskRequest: CreateTaskRequest, email: String?): SimpleResponse {
         val result = validateCreateTaskRequest(createTaskRequest)
         if (!result) {
             return SimpleResponse(success = false, message = ErrorCodes.EMPTY_FIELDS.message)
         }
-        val insert = repository.insert(task = createTaskRequest.toTask())
+        if (email == null) {
+            return SimpleResponse(success = false, message = "Usuário não encontrado")
+        }
+        val customer = customerRepository.getCustomerByEmail(email) ?: throw TaskNotFoundException("Usuário não encontrado")
+        val insert = repository.insert(task = createTaskRequest.toTask().copy(customerId = customer.id))
         if (!insert) {
             return SimpleResponse(success = false, message = ErrorCodes.REGISTER_TASK.message)
         }

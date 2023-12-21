@@ -13,8 +13,8 @@ class TaskRepositoryImpl(
 ) : TaskRepository {
     private val tasksCollection = database.getCollection<Task>(TASKS_COLLECTION)
 
-    override suspend fun getTasks(): List<Task> {
-        return tasksCollection.find().toList()
+    override suspend fun getTasks(customerId: String?): List<Task> {
+        return tasksCollection.find(Task::customerId eq customerId).toList()
     }
 
     override suspend fun getTaskById(id: String): Task? =

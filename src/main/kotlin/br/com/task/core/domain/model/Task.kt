@@ -14,4 +14,5 @@ data class Task(
     val dueDate: String = "",
     val completed: Boolean = false,
     val createAt: String = LocalDateTime.now().toDateString(),
+    val customerId: String = "",
 )

@@ -6,8 +6,8 @@ import br.com.task.data.request.UpdateTaskRequest
 import br.com.task.data.response.SimpleResponse
 
 interface TaskService {
-    suspend fun getTasks(): List<Task>
-    suspend fun insert(createTaskRequest: CreateTaskRequest): SimpleResponse
+    suspend fun getTasks(email: String?): List<Task>
+    suspend fun insert(createTaskRequest: CreateTaskRequest, email: String?): SimpleResponse
     suspend fun getTaskById(id: String): Task?
     suspend fun update(id: String, updateTaskRequest: UpdateTaskRequest): SimpleResponse
     suspend fun delete(id: String): SimpleResponse

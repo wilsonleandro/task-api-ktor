@@ -33,7 +33,7 @@ val repositoryModule = module {
 
 val serviceModule = module {
     single<TaskService> {
-        TaskServiceImpl(get(), get(), get())
+        TaskServiceImpl(get(), get(), get(), get())
     }
     single<CustomerService> {
         CustomerServiceImpl(get(), get())

@@ -9,25 +9,29 @@ import br.com.task.utils.Constants.TASKS_ROUTE
 import br.com.task.utils.ErrorCodes
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.taskRoute(taskService: TaskService) {
     route(TASKS_ROUTE) {
-        getTasks(taskService)
-        getTaskById(taskService)
-        insertTask(taskService)
-        updateTask(taskService)
-        deleteTask(taskService)
-        completeTask(taskService)
+        authenticate("auth-basic") {
+            getTasks(taskService)
+            getTaskById(taskService)
+            insertTask(taskService)
+            updateTask(taskService)
+            deleteTask(taskService)
+            completeTask(taskService)
+        }
     }
 }
 
 private fun Route.getTasks(taskService: TaskService) {
     get {
         try {
-            val tasks = taskService.getTasks()
+            val email = call.principal<UserIdPrincipal>()?.name
+            val tasks = taskService.getTasks(email)
             call.respond(HttpStatusCode.OK, tasks)
         } catch (e: Exception) {
             application.log.error(e.message)
@@ -54,9 +58,10 @@ private fun Route.getTaskById(taskService: TaskService) {
 
 private fun Route.insertTask(taskService: TaskService) {
     post {
+        val email: String? = call.principal<UserIdPrincipal>()?.name
         val request = call.receiveNullable<CreateTaskRequest>()
         request?.let { createTaskRequest ->
-            val simpleResponse = taskService.insert(createTaskRequest)
+            val simpleResponse = taskService.insert(createTaskRequest, email)
             when {
                 simpleResponse.success -> {
                     call.respond(HttpStatusCode.Created, simpleResponse)
