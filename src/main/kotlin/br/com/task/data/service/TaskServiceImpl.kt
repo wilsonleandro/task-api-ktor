@@ -10,6 +10,7 @@ import br.com.task.data.request.CreateTaskRequest
 import br.com.task.data.request.UpdateTaskRequest
 import br.com.task.data.request.toTask
 import br.com.task.data.response.SimpleResponse
+import br.com.task.plugins.AuthenticationException
 import br.com.task.plugins.TaskNotFoundException
 import br.com.task.utils.ErrorCodes
 import br.com.task.utils.SuccessCodes
@@ -23,7 +24,7 @@ class TaskServiceImpl(
     override suspend fun getTasks(email: String?): List<Task> {
         email?.let {
             val customer = customerRepository.getCustomerByEmail(it)
-            return repository.getTasks(customer?.id)
+            return repository.getTasks(customer?._id)
         } ?: return emptyList()
     }
 
@@ -38,8 +39,10 @@ class TaskServiceImpl(
         if (email == null) {
             return SimpleResponse(success = false, message = "Usuário não encontrado")
         }
-        val customer = customerRepository.getCustomerByEmail(email) ?: throw TaskNotFoundException("Usuário não encontrado")
-        val insert = repository.insert(task = createTaskRequest.toTask().copy(customerId = customer.id))
+        val customer = customerRepository
+            .getCustomerByEmail(email) ?: throw AuthenticationException("Usuário não encontrado")
+        val insert = repository
+            .insert(task = createTaskRequest.toTask().copy(customerId = customer._id))
         if (!insert) {
             return SimpleResponse(success = false, message = ErrorCodes.REGISTER_TASK.message)
         }
@@ -61,7 +64,7 @@ class TaskServiceImpl(
     override suspend fun delete(id: String): SimpleResponse {
         val task = getTaskById(id)
         task?.let {
-            return if (repository.delete(it.id)) {
+            return if (repository.delete(it._id)) {
                 SimpleResponse(success = true, message = SuccessCodes.DELETE_TASK.message)
             } else {
                 SimpleResponse(success = false, message = ErrorCodes.DELETE_TASK.message)
@@ -71,7 +74,7 @@ class TaskServiceImpl(
 
     override suspend fun complete(id: String): SimpleResponse {
         val task = getTaskById(id) ?: throw TaskNotFoundException(message = ErrorCodes.TASK_NOT_FOUND.message)
-        val modifiedCount = repository.completedTask(task.id)
+        val modifiedCount = repository.completedTask(task._id)
         return if (modifiedCount > 0)
             SimpleResponse(success = true, message = SuccessCodes.COMPLETE_TASK.message)
         else

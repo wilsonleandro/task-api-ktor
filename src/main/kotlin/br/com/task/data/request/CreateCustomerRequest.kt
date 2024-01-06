@@ -1,7 +1,9 @@
 package br.com.task.data.request
 
 import br.com.task.core.domain.model.Customer
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class CreateCustomerRequest(
     val name: String,
     val email: String,

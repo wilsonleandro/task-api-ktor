@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+  mongodb:
+    image: mongo
+    restart: always
+    container_name: meu-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - "27017:27017"
+  api:
+    image: wilsonbl/task-api
+    environment:
+      DB_HOST: mongodb
+    ports:
+      - "8080:8080"

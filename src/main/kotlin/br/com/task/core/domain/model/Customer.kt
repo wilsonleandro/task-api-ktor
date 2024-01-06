@@ -1,11 +1,13 @@
 package br.com.task.core.domain.model
 
-import org.bson.codecs.pojo.annotations.BsonId
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.bson.types.ObjectId
 
+@Serializable
 data class Customer(
-    @BsonId
-    val id: String = ObjectId().toHexString(),
+    @SerialName("_id")
+    val _id: String = ObjectId().toHexString(),
     val name: String,
     val email: String,
     val password: String,

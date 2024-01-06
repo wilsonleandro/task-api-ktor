@@ -5,4 +5,7 @@ enum class SuccessCodes(val message: String) {
     UPDATE_TASK("Tarefa atualizada com sucesso"),
     DELETE_TASK("Tarefa deletada com sucesso"),
     COMPLETE_TASK("Tarefa concluída com sucesso"),
+
+    CUSTOMER_AUTHENTICATED("Usuário autenticado"),
+    CUSTOMER_CREATED("Usuário cadastrado com sucesso"),
 }

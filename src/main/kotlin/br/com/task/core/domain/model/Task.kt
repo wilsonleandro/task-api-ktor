@@ -1,13 +1,15 @@
 package br.com.task.core.domain.model
 
 import br.com.task.utils.extensions.toDateString
-import org.bson.codecs.pojo.annotations.BsonId
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.bson.types.ObjectId
 import java.time.LocalDateTime
 
+@Serializable
 data class Task(
-    @BsonId
-    val id: String = ObjectId().toHexString(),
+    @SerialName("_id")
+    val _id: String = ObjectId().toHexString(),
     val title: String = "",
     val description: String = "",
     val priority: String = "",

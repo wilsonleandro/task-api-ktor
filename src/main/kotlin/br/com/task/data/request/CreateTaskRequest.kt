@@ -1,7 +1,9 @@
 package br.com.task.data.request
 
 import br.com.task.core.domain.model.Task
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class CreateTaskRequest(
     val title: String = "",
     val description: String = "",
